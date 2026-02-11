@@ -1,0 +1,9 @@
+fastapi==0.120.0
+implicit==0.7.2
+joblib==1.5.2
+lightfm==1.17
+numpy==2.3.4
+pandas==2.3.3
+PyYAML==6.0.3
+scipy==1.16.2
+uvicorn==0.38.0

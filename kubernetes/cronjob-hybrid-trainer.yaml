@@ -1,0 +1,42 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: hybrid-model-trainer
+  namespace: mlip-movies
+spec:
+  schedule: "0 4 */3 * *"  # every 3 days at 04:00, staggered after ALS
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 2
+  jobTemplate:
+    spec:
+      ttlSecondsAfterFinished: 1800  # cleanup pods 30 min after completion
+      template:
+        metadata:
+          labels:
+            app: hybrid-model-trainer
+        spec:
+          restartPolicy: OnFailure
+          containers:
+            - name: hybrid-trainer
+              image: speddaka/hybrid-trainer:1.0.0
+              imagePullPolicy: IfNotPresent
+              command: ["python", "train.py"]
+              args:
+                [
+                  "--users", "/shared-volume/processed/users.csv",
+                  "--movies", "/shared-volume/processed/movies.csv",
+                  "--ratings", "/shared-volume/processed/rate_events.csv",
+                  "--epochs", "5",
+                  "--no_components", "15"
+                ]
+              env:
+                - name: MODEL_VERSION
+                  value: "v2"
+              volumeMounts:
+                - name: model-volume
+                  mountPath: /shared-volume
+          volumes:
+            - name: model-volume
+              persistentVolumeClaim:
+                claimName: model-pvc

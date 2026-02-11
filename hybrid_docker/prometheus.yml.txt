@@ -1,0 +1,7 @@
+scrape_configs:
+  - job_name: "lightfm-recommender"
+    scrape_interval: 5s
+    metrics_path: /metrics
+    static_configs:
+      - targets:
+          - "your-container-host:8080"  # or 8000, depending on what you chose

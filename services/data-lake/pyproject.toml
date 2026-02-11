@@ -1,0 +1,19 @@
+[project]
+name = "shrekommender-datalake"
+version = "0.1.0"
+description = "Data lake ingestion service for Shrekommender system"
+requires-python = ">=3.10"
+dependencies = [
+    "boto3",
+    "shrekommender-common[spark]",
+]
+
+[tool.uv.sources]
+shrekommender-common = { path = "../../shared", editable = true }
+
+[tool.hatch.build.targets.wheel]
+packages = ["shrekommender_datalake"]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"

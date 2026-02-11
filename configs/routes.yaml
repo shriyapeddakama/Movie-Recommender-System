@@ -1,0 +1,3 @@
+default_model: "als@v1"
+fallback_model: "als@v1"
+rules: []

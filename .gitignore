@@ -1,0 +1,41 @@
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+
+
+# Virtual environments
+myenv/
+venv/
+.env/
+.env
+.venv/
+
+/data/
+
+.ipynb_checkpoints/
+*.ipynb~
+*.log
+
+# Model files
+*.pkl
+*.npz
+
+
+# data files
+movies.csv
+users.csv
+# Environment files
+.env
+.env.*
+**/.env
+**/.env.*
+
+# Ignore local preprocessing test files
+src/shrekommender_system/data/test_preprocess.py
+
+# Ignore test temp files
+src/shrekommender_system/data/test_preprocess.py

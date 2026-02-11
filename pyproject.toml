@@ -1,0 +1,38 @@
+[project]
+name = "shrekommender-system"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+authors = [
+    { name = "Dean Zhu", email = "zhulenghan8211@gmail.com" }
+]
+requires-python = ">=3.13"
+dependencies = [
+    "fastapi>=0.117.1",
+    "implicit>=0.7.2",
+    "matplotlib>=3.10.6",
+    "notebook>=7.4.7",
+    "numpy>=2.3.3",
+    "pandas>=2.3.2",
+    "pytest>=8.4.2",
+    "pytest-cov>=7.0.0",
+    "python-dateutil>=2.9.0.post0",
+    "prometheus-client>=0.21.0",
+    "ruff>=0.13.2",
+    "scikit-learn>=1.7.2",
+    "scipy>=1.16.2",
+    "seaborn>=0.13.2",
+    "uvicorn>=0.37.0",
+]
+
+[project.scripts]
+shrek = "shrekommender_system.cli:main"
+
+[build-system]
+requires = ["uv_build>=0.8.14,<0.9.0"]
+build-backend = "uv_build"
+
+[tool.ruff]
+exclude = [
+    "notebooks",
+]

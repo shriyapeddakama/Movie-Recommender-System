@@ -1,0 +1,35 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: als-model-trainer
+  namespace: mlip-movies
+spec:
+  schedule: "0 3 */3 * *"  # every 3 days at 03:00
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 2
+  jobTemplate:
+    spec:
+      ttlSecondsAfterFinished: 1800  # cleanup pods 30 min after completion
+      template:
+        metadata:
+          labels:
+            app: als-model-trainer
+        spec:
+          restartPolicy: OnFailure
+          containers:
+            - name: als-trainer
+              image: speddaka/als-trainer:1.0.0
+              imagePullPolicy: IfNotPresent
+              env:
+                - name: RAW_JSONL
+                  value: "/shared-volume/data/watch.jsonl"
+                - name: MODEL_VERSION
+                  value: "v2"
+              volumeMounts:
+                - name: model-volume
+                  mountPath: /shared-volume
+          volumes:
+            - name: model-volume
+              persistentVolumeClaim:
+                claimName: model-pvc

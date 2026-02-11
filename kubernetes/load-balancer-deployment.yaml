@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: load-balancer
+  namespace: mlip-movies
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: load-balancer
+  template:
+    metadata:
+      labels:
+        app: load-balancer
+    spec:
+      containers:
+        - name: load-balancer-container
+          image: speddaka/load-balancer:latest
+          ports:
+            - containerPort: 8080
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            initialDelaySeconds: 15
+            periodSeconds: 20
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: load-balancer-service
+  namespace: mlip-movies
+spec:
+  selector:
+    app: load-balancer
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8080
+  type: ClusterIP

@@ -1,0 +1,41 @@
+# NOTE: This docker-compose only manages services owned by this project.
+# External dependencies (Kafka, AWS S3) should be configured via environment variables.
+
+services:
+  # ===== Data Lake Service (Spark Streaming) =====
+  data-lake:
+    build:
+      context: ..
+      dockerfile: services/data-lake/Dockerfile
+    container_name: shrek-data-lake
+    network_mode: "host"
+    env_file:
+      - .env                                    # Shared infrastructure config
+      - ../services/data-lake/.env             # Service-specific config
+    environment:
+      # These can be overridden from command line if needed
+      KAFKA_BOOTSTRAP_SERVERS: ${KAFKA_BOOTSTRAP_SERVERS:-localhost:9092}
+      KAFKA_TOPIC: ${KAFKA_TOPIC:-movielog11}
+      SPARK_STARTING_OFFSETS: ${SPARK_STARTING_OFFSETS:-latest}
+      AWS_REGION: ${AWS_REGION:-us-east-1}
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"      # 每个日志文件最大 10MB
+        max-file: "3"        # 保留 3 个日志文件（总共 30MB）
+    restart: unless-stopped
+
+  # ===== Optional: API Service (placeholder, will migrate later) =====
+  # api:
+  #   build:
+  #     context: ..
+  #     dockerfile: services/api/Dockerfile
+  #   container_name: shrek-api
+  #   ports:
+  #     - "8082:8082"
+  #   networks:
+  #     - shrek-network
+
+networks:
+  shrek-network:
+    driver: bridge

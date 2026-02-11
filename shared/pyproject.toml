@@ -1,0 +1,18 @@
+[project]
+name = "shrekommender-common"
+version = "0.1.0"
+description = "Shared schemas and utilities for Shrekommender system"
+requires-python = ">=3.10"
+dependencies = [
+    "pydantic>=2.0",
+]
+
+[project.optional-dependencies]
+spark = [
+    # PySpark is already included in apache/spark Docker image
+    # This is only needed for local development
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"

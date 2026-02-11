@@ -1,0 +1,41 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: data-preprocessing-cronjob
+  namespace: mlip-movies
+spec:
+  schedule: "0 2 */3 * *"  # Runs at 2:00 AM every 3 days
+  concurrencyPolicy: Replace
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+          labels:
+            app: data-preprocessing
+        spec:
+          restartPolicy: OnFailure
+          containers:
+            - name: data-preprocessor
+              image: speddaka/preprocessing-pipeline:latest
+              imagePullPolicy: Always
+              volumeMounts:
+                - mountPath: /shared-volume
+                  name: shared-volume
+              env:
+                - name: RAW_DATA_DIR
+                  value: "/shared-volume/data"
+                - name: SHREK_KAFKA_BOOTSTRAP
+                  value: "127.0.0.1:9092"
+
+            # ---- SSH Tunnel sidecar ----
+            - name: ssh-tunnel
+              image: alpine
+              imagePullPolicy: Always
+              command: ["/bin/sh", "-c"]
+              args:
+                - <ssh details>
+
+          volumes:
+            - name: shared-volume
+              persistentVolumeClaim:
+                claimName: model-pvc
